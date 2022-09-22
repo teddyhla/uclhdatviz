@@ -1,0 +1,52 @@
+WITH
+
+torders AS (
+	SELECT * 
+	FROM lab_order 
+	WHERE hospital_visit_id = 620329650 AND lab_battery_id =141438748
+
+),
+— lab battery id result in pCO2 
+— hospital visit id for patient DB
+
+
+wresults AS (
+	SELECT
+	 lr.lab_result_id
+	,lr.result_last_modified_datetime
+	,lr.result_status
+	,lr.units
+	,lr.value_as_real
+	,ltd.test_lab_code
+	,ltd.lab_department
+	,ltd.lab_provider
+	,lr.lab_order_id
+	
+	FROM star.lab_result lr
+	INNER JOIN star.lab_test_definition ltd
+	ON lr.lab_test_definition_id = ltd.lab_test_definition_id
+
+	WHERE 
+	--- abl 90 is a gas machine 
+	ltd.lab_provider = 'ABL90_FLEX_PLUS'
+	AND
+	lr.result_last_modified_datetime > NOW() - '168 HOURS'::INTERVAL
+
+)
+
+
+-essentially need to intersect torders with wresults
+SELECT 
+	a.hospital_visit_id
+	,a.order_datetime
+	,a.lab_order_id
+	,a.source_system
+	,b. lab_result_id
+	,b.result_last_modified_datetime
+	,b.result_status
+	,b.units
+	,b.value_as_real
+	,b.test_lab_code
+FROM torders a
+LEFT JOIN wresults b ON a.lab_order_id = b.lab_order_id
+	
