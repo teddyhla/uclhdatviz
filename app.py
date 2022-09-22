@@ -1,17 +1,15 @@
 import dash_bootstrap_components as dbc
+#dbc for making nice html,css cards
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 from dash import Dash, dcc, html
 from dash.dependencies import Input, Output
-from plotly.subplots import make_subplots
-# import dash
-
 
 # from tab2 import tab2c
 # import necessary packages
 
-app = Dash(__name__)
 
 # declare key df in global environment ----
 df = pd.read_csv('data/ventout.csv')
@@ -31,8 +29,7 @@ df0 = pd.melt(df3,id_vars = "t")
 
 
 ##### make figures ----
-
-
+#fig1 minute volume , rr , tv, against time
 fig1 = make_subplots(
     rows=4,
     cols=1,
@@ -96,7 +93,7 @@ fig1.update_layout(
 )
 #fig1.update_annotations(yshift=0,xshift=-200,align="center")
 
-####fig 2------
+####fig 2------ pH,pCO2
 fig2 = make_subplots(
     rows=3,
     cols=1,
@@ -152,7 +149,7 @@ fig2.update_layout(
     paper_bgcolor = "white"
 )
 
-# add hover function
+
 ##### ----
 app = Dash(__name__, external_stylesheets=[dbc.themes.LUMEN])
 # launching app
